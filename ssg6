@@ -256,12 +256,9 @@ render_article_list() {
 	items=""
 	for i in $1; do
 		if ! echo $i | grep -q "index.html" ; then
-        echo "Here --> $i"
 			page_title="$(head -n 1 "$4/${i%\.html}.md" | cut -c 3-)"
 			page_date=$(head -2 "$4/${i%\.html}.md" | tail -1)
-            echo "page date : $page_date"
 			url="$page_date:$i"
-            echo "url : $url"
 			urls_sorted="$(echo "$urls_sorted\n$url" | sort -r)"
 		fi
 	done
@@ -276,6 +273,9 @@ render_article_list() {
 			page_date=$(head -2 "$4/${url%\.html}.md" | tail -1)
 			item="<li><a href="\"${url}\"">${page_title}</a><p class='date'>${page_date}</p></li>"
 			items="$items$item"
+            sed -i -e 's|\(<title>\)Ali.s Blog\(</title>\)|\1'"$page_title"' \&mdash;'" Ali'"'s Blog\2|' "$3/$url"
+
+
 		fi
 	done
 	sed -i -e "s|</article>|<ul class="articles">${items}</ul></article>|g" "$3/index.html"
